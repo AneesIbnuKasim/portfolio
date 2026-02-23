@@ -1,111 +1,249 @@
-import { motion } from 'framer-motion'
-import { Code, Database, Server, Cloud, Globe, Cpu, Smartphone, Layout } from 'lucide-react'
+import { useRef } from 'react'
+import { motion, useMotionValue, useSpring, animate } from 'framer-motion'
+import { Code, Database, Server, Cloud, Globe, Cpu, Smartphone, Layout, GitBranch, Layers } from 'lucide-react'
 
 const skills = [
-    { name: "JavaScript (ES6+)", icon: <Code size={20} />, level: 95 },
-    { name: "React.js & Redux", icon: <Layout size={20} />, level: 90 },
-    { name: "Node.js & Express", icon: <Server size={20} />, level: 90 },
-    { name: "MongoDB", icon: <Database size={20} />, level: 85 },
-    { name: "Socket.io", icon: <Globe size={20} />, level: 85 },
-    { name: "AWS & Hosting", icon: <Cloud size={20} />, level: 80 },
-    { name: "Tailwind & UI", icon: <Smartphone size={20} />, level: 90 },
-    { name: "System Design", icon: <Cpu size={20} />, level: 80 },
+    { name: "JavaScript & TypeScript", icon: <Code size={18} />, level: 95, color: '#f59e0b' },
+    { name: "React.js & Redux", icon: <Layout size={18} />, level: 92, color: '#60a5fa' },
+    { name: "Node.js & Express.js", icon: <Server size={18} />, level: 90, color: '#4ade80' },
+    { name: "MongoDB & Firebase", icon: <Database size={18} />, level: 87, color: '#4ade80' },
+    { name: "Socket.io & REST APIs", icon: <Globe size={18} />, level: 88, color: '#22d3ee' },
+    { name: "AWS & CI/CD DevOps", icon: <Cloud size={18} />, level: 82, color: '#f97316' },
+    { name: "Tailwind & Shadcn UI", icon: <Smartphone size={18} />, level: 92, color: '#38bdf8' },
+    { name: "System Design & MVC", icon: <Cpu size={18} />, level: 83, color: '#a78bfa' },
 ]
+
+/* ── 3D tilt skill card ─────────────────────────────────────── */
+const SkillCard = ({ skill }) => {
+    const cardRef = useRef(null)
+    const rotateX = useMotionValue(0)
+    const rotateY = useMotionValue(0)
+    const springRX = useSpring(rotateX, { stiffness: 120, damping: 20 })
+    const springRY = useSpring(rotateY, { stiffness: 120, damping: 20 })
+
+    const handleMove = (e) => {
+        if (!cardRef.current) return
+        const rect = cardRef.current.getBoundingClientRect()
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2
+        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2
+        animate(rotateX, y * -6, { duration: 0.2 })
+        animate(rotateY, x * 6, { duration: 0.2 })
+    }
+    const handleLeave = () => {
+        animate(rotateX, 0, { duration: 0.5 })
+        animate(rotateY, 0, { duration: 0.5 })
+    }
+
+    return (
+        <div ref={cardRef} onMouseMove={handleMove} onMouseLeave={handleLeave}
+            style={{ perspective: 800 }}>
+            <motion.div
+                style={{ rotateX: springRX, rotateY: springRY, transformStyle: 'preserve-3d' }}
+                whileHover={{ scale: 1.04 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-3 p-4 rounded-xl border cursor-default"
+                style={{
+                    background: 'var(--glass-bg)',
+                    borderColor: 'var(--glass-border)',
+                    backdropFilter: 'blur(12px)',
+                }}>
+                <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-lg flex-shrink-0"
+                        style={{ background: `${skill.color}18`, border: `1px solid ${skill.color}30`, color: skill.color }}>
+                        {skill.icon}
+                    </div>
+                    <span className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{skill.name}</span>
+                </div>
+                <div className="w-full h-1.5 rounded-full overflow-hidden"
+                    style={{ background: 'rgba(148,163,184,0.15)' }}>
+                    <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${skill.level}%` }}
+                        transition={{ duration: 1.2, delay: 0.2, ease: 'circOut' }}
+                        viewport={{ once: true }}
+                        className="h-full rounded-full"
+                        style={{ background: `linear-gradient(90deg, ${skill.color}cc, ${skill.color})` }}
+                    />
+                </div>
+            </motion.div>
+        </div>
+    )
+}
 
 const About = () => {
     const container = {
         hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1
-            }
-        }
-    };
-
-    const item = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0 }
-    };
+        show: { opacity: 1, transition: { staggerChildren: 0.07 } }
+    }
+    const item = { hidden: { opacity: 0, y: 16 }, show: { opacity: 1, y: 0 } }
 
     return (
         <section id="about" className="section-padding min-h-screen flex items-center">
-            <div className="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
+            <div className="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-14 items-center">
 
+                {/* Left — Bio */}
                 <motion.div
-                    initial={{ opacity: 0, x: -50 }}
+                    initial={{ opacity: 0, x: -40 }}
                     whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
+                    transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
                     viewport={{ once: true }}
                 >
-                    <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6 text-primary">
-                        About <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-violet-600 dark:from-blue-400 dark:to-violet-400">Me</span>
-                    </h2>
-                    <div className="space-y-6 text-lg leading-relaxed text-secondary">
-                        <p>
-                            I am a result-driven, self-taught MERN Stack developer with a proven track record of building scalable web applications.
-                            My expertise spans across the entire stack, from crafting responsive frontends with React, Tailwind, and Shadcn, to engineering robust backends with Node.js, Express, and MongoDB.
-                        </p>
-                        <p>
-                            I have successfully delivered impactful projects including E-commerce platforms and Learning Management Systems using real-time technologies like Socket.io.
-                            I am energetic, adaptable, and dedicated to developing API-friendly solutions that solve real-world problems.
-                        </p>
-                        <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 inline-block">
-                            <span className="font-semibold text-primary">Education:</span>
-                            <span className="block text-sm mt-1">Electronics And Communication Engineering (2013-2017)</span>
-                            <span className="text-xs text-secondary">HMSIT, VTU, Bengaluru</span>
-                        </div>
-                    </div>
-                </motion.div>
-
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8 }}
-                    viewport={{ once: true }}
-                    className="glass p-8 rounded-3xl bg-white/60 dark:bg-white/5 border border-white/20 dark:border-white/10 shadow-xl"
-                >
-                    <h3 className="text-2xl font-heading font-bold mb-8 text-primary flex items-center gap-2">
-                        Technical Arsenal
-                        <span className="h-1.5 w-1.5 bg-blue-500 rounded-full animate-pulse"></span>
-                    </h3>
-
-                    <motion.div
-                        variants={container}
-                        initial="hidden"
-                        whileInView="show"
+                    <motion.span
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
-                        className="grid grid-cols-1 sm:grid-cols-2 gap-4"
-                    >
-                        {skills.map((skill, index) => (
-                            <motion.div
-                                variants={item}
-                                key={index}
-                                className="group flex flex-col gap-3 p-4 rounded-xl bg-white dark:bg-white/5 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors border border-gray-100 dark:border-white/5 shadow-sm hover:shadow-md hover:border-blue-200 dark:hover:border-blue-500/30"
-                            >
-                                <div className="flex items-center gap-3">
-                                    <div className="text-blue-600 dark:text-blue-400 p-2 bg-blue-100 dark:bg-blue-500/20 rounded-lg group-hover:scale-110 transition-transform">
-                                        {skill.icon}
-                                    </div>
-                                    <span className="font-semibold text-sm text-primary">{skill.name}</span>
-                                </div>
+                        className="inline-block text-xs font-bold uppercase tracking-[0.2em] mb-4 px-3 py-1 rounded-full border"
+                        style={{
+                            color: 'var(--accent-primary)',
+                            borderColor: 'rgba(96,165,250,0.25)',
+                            background: 'rgba(96,165,250,0.06)',
+                        }}>
+                        About Me
+                    </motion.span>
 
-                                <div className="w-full bg-gray-100 dark:bg-gray-700 h-1.5 rounded-full overflow-hidden">
-                                    <motion.div
-                                        initial={{ width: 0 }}
-                                        whileInView={{ width: `${skill.level}%` }}
-                                        transition={{ duration: 1.2, delay: 0.2, ease: "circOut" }}
-                                        viewport={{ once: true }}
-                                        className="h-full bg-gradient-to-r from-blue-500 to-violet-500 rounded-full"
-                                    />
-                                </div>
-                            </motion.div>
-                        ))}
+                    <h2 className="text-4xl md:text-5xl font-heading font-bold mb-6" style={{ color: 'var(--text-primary)' }}>
+                        Who{' '}
+                        <span className="text-transparent bg-clip-text"
+                            style={{ backgroundImage: 'linear-gradient(135deg, #60a5fa, #a78bfa)' }}>
+                            I Am
+                        </span>
+                    </h2>
+
+                    <div className="space-y-5 text-base leading-relaxed mb-8" style={{ color: 'var(--text-secondary)' }}>
+                        <p>
+                            Full-Stack Developer with strong expertise in the MERN stack and modern web development.
+                            Specialized in building secure, scalable, and API-driven applications with real-time features
+                            and clean architecture.
+                        </p>
+                        <p>
+                            Proven ability to design production-ready systems including AI-powered e-commerce platforms
+                            and learning management systems. Committed to continuous learning, performance optimization,
+                            and writing maintainable industry-standard codebases.
+                        </p>
+                    </div>
+
+                    {/* Education badge */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="p-4 rounded-xl border inline-block backdrop-blur-sm"
+                        style={{
+                            background: 'rgba(96,165,250,0.05)',
+                            borderColor: 'rgba(96,165,250,0.15)',
+                        }}>
+                        <span className="font-bold text-sm block mb-1" style={{ color: 'var(--text-primary)' }}>🎓 Education</span>
+                        <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                            B.E. in Electronics & Communication Engineering (2013–2017)
+                        </span>
+                        <span className="text-xs block mt-0.5 opacity-60" style={{ color: 'var(--text-secondary)' }}>
+                            HMSIT, VTU — Bengaluru, India
+                        </span>
+                    </motion.div>
+
+                    {/* Profile photo card */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        viewport={{ once: true }}
+                        className="mt-8 flex items-center gap-5"
+                    >
+                        <motion.div
+                            animate={{ y: [0, -6, 0] }}
+                            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                            className="relative flex-shrink-0"
+                        >
+                            <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+                                className="absolute rounded-full"
+                                style={{
+                                    inset: -3,
+                                    background: 'conic-gradient(from 0deg, #60a5fa, #a78bfa, #06b6d4, #60a5fa)',
+                                    borderRadius: '50%',
+                                    filter: 'blur(1px)',
+                                    zIndex: 0,
+                                }}
+                            />
+                            <div className="relative rounded-full overflow-hidden"
+                                style={{
+                                    width: 88, height: 88,
+                                    zIndex: 1,
+                                    boxShadow: '0 0 24px rgba(96,165,250,0.25)',
+                                }}>
+                                <img
+                                    src="/profile.jpg"
+                                    alt="Anees M"
+                                    className="w-full h-full object-cover object-top"
+                                />
+                            </div>
+                            <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-green-400 border-2 border-[#030712] z-10 animate-pulse"
+                                style={{ boxShadow: '0 0 6px rgba(74,222,128,0.8)' }} />
+                        </motion.div>
+                        <div>
+                            <p className="font-bold text-base" style={{ color: 'var(--text-primary)' }}>Anees M</p>
+                            <p className="text-sm font-medium" style={{ color: 'var(--accent-primary)' }}>Full Stack Developer</p>
+                            <p className="text-xs mt-1 font-medium opacity-60" style={{ color: 'var(--text-secondary)' }}>Kerala, India · Open to Relocate</p>
+                        </div>
                     </motion.div>
                 </motion.div>
 
+                {/* Right — Skills grid */}
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.94 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                    viewport={{ once: true }}
+                    className="relative"
+                >
+                    {[...Array(3)].map((_, i) => (
+                        <motion.div key={i}
+                            animate={{ y: [0, -(12 + i * 6), 0], opacity: [0.3, 0.7, 0.3] }}
+                            transition={{ duration: 4 + i * 2, repeat: Infinity, ease: 'easeInOut', delay: i * 1.5 }}
+                            className="absolute w-2 h-2 rounded-full pointer-events-none"
+                            style={{
+                                top: `${20 + i * 30}%`,
+                                left: i % 2 === 0 ? '-16px' : 'calc(100% + 12px)',
+                                background: i === 0 ? '#60a5fa' : i === 1 ? '#a78bfa' : '#22d3ee',
+                                filter: 'blur(1px)',
+                            }}
+                        />
+                    ))}
+
+                    <div className="p-6 rounded-3xl border backdrop-blur-xl"
+                        style={{
+                            background: 'var(--glass-bg)',
+                            borderColor: 'var(--glass-border)',
+                            boxShadow: 'var(--glass-shadow)',
+                        }}>
+                        <h3 className="text-xl font-heading font-bold mb-6 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+                            Technical Arsenal
+                            <motion.span
+                                animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="w-2 h-2 bg-blue-400 rounded-full"
+                                style={{ boxShadow: '0 0 8px rgba(96,165,250,0.8)' }}
+                            />
+                        </h3>
+                        <motion.div
+                            variants={container}
+                            initial="hidden"
+                            whileInView="show"
+                            viewport={{ once: true }}
+                            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                        >
+                            {skills.map((skill, i) => (
+                                <motion.div key={i} variants={item}>
+                                    <SkillCard skill={skill} />
+                                </motion.div>
+                            ))}
+                        </motion.div>
+                    </div>
+                </motion.div>
             </div>
         </section>
     )
 }
+
 export default About
