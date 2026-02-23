@@ -8,8 +8,8 @@ const projects = [
         title: "E-Commerce Web Application",
         description: "Production-ready, cloud-hosted e-commerce platform with AI-powered chat support, Razorpay/COD/wallet payments, real-time order tracking, coupon system, dynamic admin dashboard, and CI/CD with GitHub Actions → AWS Elastic Beanstalk.",
         tags: ["React", "Redux", "Node.js", "Express", "MongoDB", "AWS S3", "EC2", "JWT", "Razorpay", "ChatGPT API"],
-        link: "#",
-        github: "https://github.com/AneesIbnuKasim",
+        link: "https://ventaro.space",
+        github: "https://github.com/AneesIbnuKasim/Ventaro",
         ecommerce: true,
         highlights: [
             "JWT auth + role-based access control",
@@ -72,7 +72,7 @@ const miniProjects = [
 const EcommerceScene = () => {
     const [couponVisible, setCouponVisible] = useState(false)
     const price = useMotionValue(99.99)
-    const [displayPrice, setDisplayPrice] = useState('99.99')
+    const [displayPrice, setDisplayPrice] = useState('999')
 
     useEffect(() => {
         const t1 = setTimeout(() => setCouponVisible(true), 2000)
@@ -81,7 +81,7 @@ const EcommerceScene = () => {
 
     useEffect(() => {
         if (couponVisible) {
-            const controls = animate(price, 69.99, {
+            const controls = animate(price, 799, {
                 duration: 1.2, ease: 'easeOut',
                 onUpdate: (v) => setDisplayPrice(v.toFixed(2))
             })
@@ -90,7 +90,7 @@ const EcommerceScene = () => {
     }, [couponVisible, price])
 
     return (
-        <div className="relative h-52 w-full overflow-hidden rounded-xl"
+        <div className="relative h-55 w-full overflow-hidden rounded-xl"
             style={{ background: 'linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.9) 100%)' }}>
             <div className="absolute inset-0 opacity-20"
                 style={{
@@ -108,10 +108,10 @@ const EcommerceScene = () => {
                 </div>
                 <div className="text-[10px] font-semibold text-white/70 mb-1">Premium T-Shirt</div>
                 <div className="flex items-center gap-1">
-                    <motion.span className="text-sm font-bold text-white">${displayPrice}</motion.span>
+                    <motion.span className="text-sm font-bold text-white">Rs. {displayPrice}</motion.span>
                     {couponVisible && (
                         <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-                            className="text-[10px] line-through text-white/30">$99.99</motion.span>
+                            className="text-[10px] line-through text-white/30">Rs. 999</motion.span>
                     )}
                 </div>
                 <div className="flex gap-0.5 mt-1">
@@ -127,7 +127,7 @@ const EcommerceScene = () => {
                 <div className="space-y-1.5">
                     <div className="flex justify-between text-[10px]">
                         <span className="text-white/50">Subtotal</span>
-                        <span className="text-white/80 font-semibold">${displayPrice}</span>
+                        <span className="text-white/80 font-semibold">Rs.{displayPrice}</span>
                     </div>
                     <div className="flex justify-between text-[10px]">
                         <span className="text-white/50">Shipping</span>
@@ -135,7 +135,7 @@ const EcommerceScene = () => {
                     </div>
                     <div className="border-t border-white/10 pt-1.5 flex justify-between text-[10px]">
                         <span className="text-white/70 font-bold">Total</span>
-                        <span className="text-blue-400 font-bold">${displayPrice}</span>
+                        <span className="text-blue-400 font-bold">Rs.{displayPrice}</span>
                     </div>
                 </div>
                 <motion.button whileHover={{ scale: 1.02 }}
@@ -206,9 +206,9 @@ const ProjectCard = ({ project, index }) => {
                     {project.ecommerce ? (
                         <div className="p-3 pb-0"><EcommerceScene /></div>
                     ) : (
-                        <div className="relative h-48 overflow-hidden">
+                        <div className="relative h-58 overflow-hidden">
                             <img src={project.image} alt={project.title}
-                                className="w-full h-[100px] object-cover transition-transform duration-700 group-hover:scale-110" />
+                                className="w-full h-full object-fit transition-transform duration-700 group-hover:scale-110" />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                         </div>
                     )}
@@ -222,7 +222,7 @@ const ProjectCard = ({ project, index }) => {
                         style={{ color: 'var(--text-primary)' }}>
                         {project.title}
                     </h3>
-                    <p className="text-sm mb-4 leading-relaxed line-clamp-3 font-medium flex-1"
+                    <p className="text-sm mb-4 leading-relaxed line-clamp-5 font-medium flex-1"
                         style={{ color: 'var(--text-secondary)' }}>
                         {project.description}
                     </p>
