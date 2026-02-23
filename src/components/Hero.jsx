@@ -224,7 +224,7 @@ const Hero = () => {
                                         <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                     </button>
                                 </Link>
-                                <a href="/resume.pdf" download="Anees_M_Resume.pdf" className="w-full sm:w-auto">
+                                <a href="/Anees_Resume_Pdf.pdf" download="Anees_Resume.pdf" className="w-full sm:w-auto">
                                     <button className="btn-outline flex items-center justify-center gap-2 w-full group text-sm">
                                         Download Resume
                                         <Download size={18} className="group-hover:translate-y-1 transition-transform" />
